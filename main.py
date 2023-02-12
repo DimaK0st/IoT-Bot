@@ -11,7 +11,7 @@ from Controllers.threads import thread_conditioner
 from constant import GET_TEMP, SET_TEMP, TURN_ON_LIGHT, TURN_OFF_LIGHT, OPTS
 
 def callback(message):
-    print("[log] Распознано: " + message)
+    print("\n[log] Распознано: " + message)
 
     if message.startswith(OPTS["alias"]):
         # обращаются к Кеше
@@ -42,11 +42,19 @@ def recognize_cmd(cmd):
     return RC
 
 
-callback('Іван яка зараз температура 34')
+callback('Іван яка зараз температура?')
+callback('Іван які лампи зараз увімкнено')
 callback('Іван увімкни світло у Кухні')
 callback('Іван увімкни світло у Кімнаті')
 callback('Іван які лампи зараз увімкнено')
 callback('Іван зроби температуру 31')
+
+time.sleep(9)
+callback('Іван яка зараз температура?')
+time.sleep(9)
+callback('Іван яка зараз температура?')
+time.sleep(9)
+callback('Іван яка зараз температура?')
 
 
 time.sleep(20)

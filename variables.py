@@ -1,4 +1,4 @@
-currentTemp = 26
+currentTemp = {'value': 26}
 
 conditionerState = False
 

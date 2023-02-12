@@ -12,7 +12,8 @@ from variables import lights, currentTemp
 
 def execute_cmd(cmd, old):
     if cmd == GET_TEMP:
-        print("Зараз температура: %d °C" % currentTemp)
+        global currentTemp
+        print("Зараз температура: %d °C" % currentTemp['value'])
 
     elif cmd == SET_TEMP:
 
