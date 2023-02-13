@@ -1,6 +1,6 @@
 currentTemp = {'value': 26}
 
-conditionerState = False
+conditionerState = {'value': False}
 
 lights = {
     1: {

@@ -7,10 +7,13 @@ from pprint import pprint
 from fuzzywuzzy import fuzz
 
 from Controllers.threads import thread_conditioner
-from constant import GET_TEMP, SET_TEMP, TURN_ON_LIGHT, TURN_OFF_LIGHT, OPTS, GET_LIGHT
-from variables import lights, currentTemp
+from constant import GET_TEMP, SET_TEMP, TURN_ON_LIGHT, TURN_OFF_LIGHT, OPTS, GET_LIGHT, TURN_ON_ALL_LIGHT, \
+    TURN_OFF_ALL_LIGHT, CONDITIONER_STATE, HOME_STATE
+from variables import lights, currentTemp, conditionerState
+
 
 def execute_cmd(cmd, old):
+    global conditionerState
     if cmd == GET_TEMP:
         global currentTemp
         print("Зараз температура: %d °C" % currentTemp['value'])
@@ -26,16 +29,39 @@ def execute_cmd(cmd, old):
         x.start()
 
     elif cmd == TURN_ON_LIGHT:
+        for x in OPTS['cmds'][TURN_ON_LIGHT]:
+            old = old.replace(x, "").strip()
+
         lightManager(TURN_ON_LIGHT, True, old)
         print('Світло було увімкнено у ' + old)
 
 
     elif cmd == TURN_OFF_LIGHT:
+        for x in OPTS['cmds'][TURN_OFF_LIGHT]:
+            old = old.replace(x, "").strip()
+
         lightManager(TURN_OFF_LIGHT, False, old)
         print('Світло було вимкнено у ' + old)
 
     elif cmd == GET_LIGHT:
+        pprint(lights)
 
+    elif cmd == TURN_ON_ALL_LIGHT:
+        for light in lights.items():
+            light['state'] = True
+        pprint(lights)
+
+    elif cmd == TURN_OFF_ALL_LIGHT:
+        for light in lights.items():
+            light['state'] = False
+        pprint(lights)
+
+    elif cmd == CONDITIONER_STATE:
+        global conditionerState
+        print('Кондиціонер зараз ' + ('вимкнений', 'вімкнено')[conditionerState['value']])
+
+    elif cmd == HOME_STATE:
+        print('Кондиціонер зараз ' + ('вимкнений', 'вімкнено')[conditionerState['value']])
         pprint(lights)
 
     else:
