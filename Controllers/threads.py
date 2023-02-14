@@ -35,6 +35,7 @@ def thread_conditioner(temp):
     conditionerState['value'] = False
     print("Кондиціонер закінчив працювати")
 
+
 def emulator_degrees():
     i = 0
 
@@ -53,14 +54,15 @@ def emulator_degrees():
 
 def protection_func():
     x = ''
-    while 0<2:
+    while 0 < 2:
 
-        if (currentTemp['value']>32 or currentTemp['value']<18) and x =='':
+        if (currentTemp['value'] > 32 or currentTemp['value'] < 18) and x == '':
             global conditionerState
             conditionerState['value'] = False
             time.sleep(6)
             x = threading.Thread(target=thread_conditioner, args=(25,))
             x.start()
+
 
 def incOrDecTemp(bool):
     global currentTemp

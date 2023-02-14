@@ -3,9 +3,7 @@ import os
 import re
 import threading
 from pprint import pprint
-
 from fuzzywuzzy import fuzz
-
 from Controllers.threads import thread_conditioner
 from constant import GET_TEMP, SET_TEMP, TURN_ON_LIGHT, TURN_OFF_LIGHT, OPTS, GET_LIGHT, TURN_ON_ALL_LIGHT, \
     TURN_OFF_ALL_LIGHT, CONDITIONER_STATE, HOME_STATE
@@ -47,12 +45,12 @@ def execute_cmd(cmd, old):
         pprint(lights)
 
     elif cmd == TURN_ON_ALL_LIGHT:
-        for light in lights.items():
+        for i, light in lights.items():
             light['state'] = True
         pprint(lights)
 
     elif cmd == TURN_OFF_ALL_LIGHT:
-        for light in lights.items():
+        for i, light in lights.items():
             light['state'] = False
         pprint(lights)
 
@@ -77,6 +75,7 @@ def checkAlias(cmd):
             if vrt > RC['percent']:
                 RC['cmd'] = c
                 RC['percent'] = vrt
+                
     return RC['cmd']
 
 
