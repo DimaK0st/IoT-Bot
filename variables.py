@@ -1,4 +1,13 @@
+import telebot
+
 currentTemp = {'value': 26}
+user_id = 0
+botObj = {
+    'bot': '',
+    'user_id': 0,
+    'chat_id': 0,
+    'msg_id': 0,
+}
 
 conditionerState = {'value': False}
 

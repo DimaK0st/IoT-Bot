@@ -7,7 +7,7 @@ from fuzzywuzzy import fuzz
 from Controllers.threads import thread_conditioner
 from constant import GET_TEMP, SET_TEMP, TURN_ON_LIGHT, TURN_OFF_LIGHT, OPTS, GET_LIGHT, TURN_ON_ALL_LIGHT, \
     TURN_OFF_ALL_LIGHT, CONDITIONER_STATE, HOME_STATE
-from variables import lights, currentTemp, conditionerState
+from variables import lights, currentTemp, conditionerState, botObj
 
 
 def execute_cmd(cmd, old):
@@ -15,9 +15,11 @@ def execute_cmd(cmd, old):
     if cmd == GET_TEMP:
         global currentTemp
         print("Зараз температура: %d °C" % currentTemp['value'])
+        return ("Зараз температура: %d °C" % currentTemp['value'])
 
     elif cmd == SET_TEMP:
-
+        global botObj
+        print('bot', botObj)
         for x in OPTS['cmds'][SET_TEMP]:
             old = old.replace(x, "").strip()
 
@@ -25,6 +27,7 @@ def execute_cmd(cmd, old):
 
         x = threading.Thread(target=thread_conditioner, args=(int(degrees),))
         x.start()
+        return 'Запуск процесу'
 
     elif cmd == TURN_ON_LIGHT:
         for x in OPTS['cmds'][TURN_ON_LIGHT]:
@@ -64,6 +67,7 @@ def execute_cmd(cmd, old):
 
     else:
         print('Команда не розпізнана, будь ласка повторіть спробу!')
+        return ('Команда не розпізнана, будь ласка повторіть спробу!')
 
 
 def checkAlias(cmd):
