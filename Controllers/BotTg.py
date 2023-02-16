@@ -2,10 +2,11 @@ import telebot
 from fuzzywuzzy import fuzz
 from telebot import types
 
-from Controllers.actions import execute_cmd
+from Controllers.actions import execute_cmd, getFormatedLight
 from constant import OPTS
 
-from variables import botObj, user_id
+from variables import currentTemp
+from variables import lights, currentTemp, conditionerState, botObj, user_id
 
 
 def callback(message):
@@ -46,7 +47,7 @@ class BotTg:
         @bot.message_handler(commands=['start'])
         def start(message):
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-            btn1 = types.KeyboardButton("👋 Поздороваться")
+            btn1 = types.KeyboardButton("Допомога")
             markup.add(btn1)
             bot.send_message(message.from_user.id, "👋 Привет! Я твой бот-помошник!", reply_markup=markup)
 
@@ -58,23 +59,44 @@ class BotTg:
             botObj['chat_id'] = message.chat.id
 
             send = callback(message.text)
-            print('////////////////////////////////',send)
-
+            print('////////////////////////////////', send)
+            print('send',send)
             if send:
                 print("*************************", send)
                 msg = bot.send_message(message.from_user.id,
                                        send,
                                        parse_mode='Markdown')
-                print("------------------------------------------------------",msg)
+                print("------------------------------------------------------", msg)
                 botObj['msg_id'] = msg.message_id
+            print('hui')
+            print('message.text',message.text)
 
-            if message.text == '👋 Поздороваться':
+            if message.text == 'Допомога':
+                info = ''
+                temp ='Як можна звертатись до бота: '
+                print("OPTS['alias'].items()",OPTS['alias'])
+                for alias in OPTS['alias']:
+                    print('aliasalias',alias)
+                    temp += ', ' + alias
+                info += temp + '\n'
+                temp = ''
+                for ind, light in lights.items():
+                    print('lightlightlight',light)
+                    temp += ', ' + light['name']
+                print(info)
+                info += """Команди які знає бот:
+... зроби(встанови) температуру (температура),
+... увімкни світло у %s,
+... вимкни світло у %s,
+... статус квартири,""" % (temp,temp)
+                print(info)
+
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)  # создание новых кнопок
-                btn1 = types.KeyboardButton('Как стать автором на Хабре?')
-                btn2 = types.KeyboardButton('Правила сайта')
-                btn3 = types.KeyboardButton('Советы по оформлению публикации')
+                btn1 = types.KeyboardButton('Іван, розпочалась комендантська година')
+                btn2 = types.KeyboardButton('Іван, увімкни світло у всій квартирі')
+                btn3 = types.KeyboardButton('Допомога')
                 markup.add(btn1, btn2, btn3)
-                bot.send_message(message.from_user.id, '❓ Задайте интересующий вас вопрос',
+                bot.send_message(message.from_user.id, info,
                                  reply_markup=markup)  # ответ бота
 
 

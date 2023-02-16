@@ -24,12 +24,13 @@ global botObj
 botObj['bot'] = telebot.TeleBot('6004805138:AAF4lpUfT63_coSSh9gy1254ghQxHOrB89c')
 print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', botObj)
 b = BotTg(botObj['bot'])
-botObj['bot'].polling(none_stop=True, interval=0)  # обязательная для работы бота часть
 
-time.sleep(1)
-x = threading.Thread(target=emulator_degrees, args=())
-x.start()
-
+while True:
+    try:
+        botObj['bot'].polling(none_stop=True, interval=0)  # обязательная для работы бота часть
+    except Exception as _ex:
+        print(_ex)
+        time.sleep(15)
 
 # callback('Іван в якому стані зараз кондиціонер?')
 # callback('Іван яка зараз температура?')

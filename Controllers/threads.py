@@ -3,17 +3,19 @@ import threading
 import time
 from random import randint
 
-from variables import currentTemp
+from variables import currentTemp, protection
 from variables import lights, currentTemp, conditionerState, botObj, user_id
 
 
-def thread_conditioner(temp):
+def thread_conditioner(temp, prot=False):
     global conditionerState
     global currentTemp
     print("Кондиціонер почав працювати при температурі: %d" % currentTemp['value'])
     printBot("Кондиціонер почав працювати при температурі: %d" % currentTemp['value'])
 
     conditionerState['value'] = True
+    if prot:
+        protection['value'] = True
 
     if currentTemp['value'] >= temp:
         while (currentTemp['value'] > temp):
@@ -35,6 +37,7 @@ def thread_conditioner(temp):
             print('Температура підвищилась до: %d' % currentTemp['value'])
             printBot('Температура підвищилась до: %d' % currentTemp['value'])
 
+    protection['value']=False
     conditionerState['value'] = False
     print("Кондиціонер закінчив працювати")
     printBot("Кондиціонер закінчив працювати")
@@ -64,9 +67,11 @@ def protection_func():
 
         if (currentTemp['value'] > 32 or currentTemp['value'] < 18) and (x == '' or not x.is_alive()):
             global conditionerState
+            global protection
             conditionerState['value'] = False
+            protection['value']=True
             time.sleep(6)
-            x = threading.Thread(target=thread_conditioner, args=(25,))
+            x = threading.Thread(target=thread_conditioner, args=(25,True,))
             x.start()
 
 
@@ -80,27 +85,31 @@ def incOrDecTemp(bool):
 
 
 def getFormatedLight():
-    res = ''
+    global conditionerState
+    global lights
+    res = '\n'
+
     for ind, light in lights.items():
-        res += str(ind) + (' 💡', ' 🚨')[light['state']]
+        res += str(ind) + '-' + (' 💡', ' 🚨')[light['state']] + '-' + light['name'] + '\n'
+
+    res += 'Кондиціонер-' + ('☑', '✅')[conditionerState['value']] + '\n'
+
+    return res
 
 
 def printBot(text):
     global botObj
-
-    print('botObj111111111111', botObj)
+    global protection
+    result = 'Зараз температура у кімнаті: %d°C' % currentTemp['value']
+    result += getFormatedLight()
+    result += '\n' + text
+    print(protection)
+    if(protection['value']):
+        result += '\n' + '🛑Було увімкнено екстрену зміну температури🛑'
 
     if botObj['bot'] == '' or botObj['user_id'] == 0:
         return
 
-    print("botObj['chat_id']!=0 and botObj['msg_id']", botObj['chat_id'], botObj['msg_id'])
-
     if botObj['chat_id'] != 0 and botObj['msg_id'] != 0:
-        print('editsdasdasd')
         botObj['bot'].edit_message_text(chat_id=botObj['user_id'], message_id=botObj['msg_id'],
-                                        text=text, parse_mode='Markdown')
-    else:
-        print('text', botObj['user_id'])
-        botObj['bot'].send_message(botObj['user_id'],
-                                   text,
-                                   parse_mode='Markdown')
+                                        text=result, parse_mode='Markdown')

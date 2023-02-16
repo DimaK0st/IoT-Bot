@@ -8,7 +8,7 @@ botObj = {
     'chat_id': 0,
     'msg_id': 0,
 }
-
+protection = {'value':False}
 conditionerState = {'value': False}
 
 lights = {
