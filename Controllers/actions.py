@@ -6,8 +6,8 @@ from pprint import pprint
 from fuzzywuzzy import fuzz
 from Controllers.threads import thread_conditioner, printBot
 from constant import GET_TEMP, SET_TEMP, TURN_ON_LIGHT, TURN_OFF_LIGHT, OPTS, GET_LIGHT, TURN_ON_ALL_LIGHT, \
-    TURN_OFF_ALL_LIGHT, CONDITIONER_STATE, HOME_STATE
-from variables import lights, currentTemp, conditionerState, botObj
+    TURN_OFF_ALL_LIGHT, CONDITIONER_STATE, HOME_STATE, PATRIOT, KNT, SAVE
+from variables import lights, currentTemp, conditionerState, botObj, excel
 
 
 def execute_cmd(cmd, old):
@@ -64,6 +64,15 @@ def execute_cmd(cmd, old):
     elif cmd == HOME_STATE:
         return ('Обробка')
 
+    elif cmd == PATRIOT:
+        return ('Героям слава 🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦🇺🇦')
+
+    elif cmd == KNT:
+        botObj['bot'].send_sticker(botObj['user_id'], 'CAACAgIAAxkBAAICJmPz_L3R9JK0TkRGKReKf3oOupiYAAJVAAMHmOofe6wwMjjZnVQuBA')
+
+    elif cmd == SAVE:
+        global excel
+        excel['wb'].save("res.xlsx")
 
     else:
         print('Команда не розпізнана, будь ласка повторіть спробу!')
