@@ -1,7 +1,9 @@
 import telebot
 
 currentTemp = {'value': 26}
+excel = {'wb': ''}
 user_id = 0
+msgTemp = {'value': ''}
 botObj = {
     'bot': '',
     'user_id': 0,
