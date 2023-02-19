@@ -3,10 +3,8 @@ import threading
 import time
 from random import randint
 
-from openpyxl import Workbook, load_workbook
-
 from variables import currentTemp, protection
-from variables import lights, currentTemp, conditionerState, botObj, user_id, excel, msgTemp
+from variables import lights, currentTemp, conditionerState, botObj, user_id
 
 
 def thread_conditioner(temp, prot=False):
@@ -39,7 +37,7 @@ def thread_conditioner(temp, prot=False):
             print('Температура підвищилась до: %d' % currentTemp['value'])
             printBot('Температура підвищилась до: %d' % currentTemp['value'])
 
-    protection['value'] = False
+    protection['value']=False
     conditionerState['value'] = False
     print("Кондиціонер закінчив працювати")
     printBot("Кондиціонер закінчив працювати")
@@ -52,11 +50,11 @@ def emulator_degrees():
         incOrDecTemp(True)
         print("Температура підвищилась на 1 градус, зараз: %d" % currentTemp['value'])
         printBot("Температура підвищилась на 1 градус, зараз: %d" % currentTemp['value'])
-        time.sleep(7)
+        time.sleep(10)
         i += 1
 
     while True:
-        time.sleep(7)
+        time.sleep(10)
         rand = randint(-1, 1)
         print("Температура змінилась на %d градус, зараз: %d" % (rand, currentTemp['value']))
         printBot("Температура змінилась на %d градус, зараз: %d" % (rand, currentTemp['value']))
@@ -71,9 +69,9 @@ def protection_func():
             global conditionerState
             global protection
             conditionerState['value'] = False
-            protection['value'] = True
+            protection['value']=True
             time.sleep(6)
-            x = threading.Thread(target=thread_conditioner, args=(25, True,))
+            x = threading.Thread(target=thread_conditioner, args=(25,True,))
             x.start()
 
 
@@ -92,7 +90,7 @@ def getFormatedLight():
     res = '\n'
 
     for ind, light in lights.items():
-        res += str(ind) + '-' + (' 🌑', ' 🌝')[light['state']] + '-' + light['name'] + '\n'
+        res += str(ind) + '-' + (' 💡', ' 🚨')[light['state']] + '-' + light['name'] + '\n'
 
     res += 'Кондиціонер-' + ('☑', '✅')[conditionerState['value']] + '\n'
 
@@ -102,47 +100,16 @@ def getFormatedLight():
 def printBot(text):
     global botObj
     global protection
-    alert = ''
     result = 'Зараз температура у кімнаті: %d°C' % currentTemp['value']
     result += getFormatedLight()
     result += '\n' + text
     print(protection)
-    if (protection['value']):
-        alert = '\n' + '🛑Було увімкнено екстрену зміну температури🛑'
+    if(protection['value']):
+        result += '\n' + '🛑Було увімкнено екстрену зміну температури🛑'
 
     if botObj['bot'] == '' or botObj['user_id'] == 0:
         return
 
     if botObj['chat_id'] != 0 and botObj['msg_id'] != 0:
-        print('write excel')
-        global excel
-        excelPrint = formatPrintExcelRes()
-        excelPrint.append(text)
-        excelPrint.append(alert)
-
-        temp = excel['wb'].active
-        temp.append(excelPrint)
-
-        print('result',result)
-        result += alert
-
         botObj['bot'].edit_message_text(chat_id=botObj['user_id'], message_id=botObj['msg_id'],
                                         text=result, parse_mode='Markdown')
-
-
-def formatPrintExcelRes():
-    global conditionerState
-    global lights
-    global msgTemp
-
-    res = [currentTemp['value']]
-
-    for ind, light in lights.items():
-        res.append(('-', '+')[light['state']])
-
-    res.append(('-', '+')[conditionerState['value']])
-    res.append(msgTemp['value'])
-    msgTemp['value'] = ''
-    return res
-
-
