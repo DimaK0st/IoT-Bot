@@ -2,18 +2,31 @@ import os
 import threading
 import time
 import datetime
-
 import telebot
 from fuzzywuzzy import fuzz
+from openpyxl import Workbook, load_workbook
 
-# настройки
 from Controllers.BotTg import BotTg
 from Controllers.actions import execute_cmd
 from Controllers.threads import thread_conditioner, emulator_degrees, protection_func
 from constant import GET_TEMP, SET_TEMP, TURN_ON_LIGHT, TURN_OFF_LIGHT, OPTS
-from variables import lights, currentTemp, conditionerState, botObj, user_id
+from variables import lights, currentTemp, conditionerState, botObj, user_id, excel
+
+
+wb = Workbook()
+
+sheet = wb.active
+
+sheet.append(['Температура','Кімната','Вітальня','Спальня','Кухня','Вбиральня','Зала','Кондиціонер','Статус'])
+
+wb.save("res.xlsx")
+
+wb = load_workbook('res.xlsx')
+global excel
+excel['wb'] = wb
 
 time.sleep(1)
+
 x = threading.Thread(target=emulator_degrees, args=())
 x.start()
 
@@ -27,7 +40,7 @@ b = BotTg(botObj['bot'])
 
 while True:
     try:
-        botObj['bot'].polling(none_stop=True, interval=0)  # обязательная для работы бота часть
+        botObj['bot'].polling(none_stop=True, interval=0)
     except Exception as _ex:
         print(_ex)
         time.sleep(15)
